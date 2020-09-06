@@ -44,8 +44,11 @@ class StructObject:
 
     def make_definition(self):
         struct = self.structure
-        definition = ""
+        struct_name = self.get_struct_name()
+        object_name = self.object_name
+        init = ""
         for v in struct.variables:
-            d = "{}.{} = {};\n".format(self.object_name, v.var_name, v.init_val)
-            definition = definition + d
+            d = " {},".format(v.init_val)
+            init = init + d
+        definition = "struct %s %s = {%s};\n" % (struct_name, object_name, init)
         return definition
