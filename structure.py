@@ -27,7 +27,7 @@ class Structure:
         for n, t in self.name_type.items():
             d = "{} {};\n".format(t, n)
             definition = definition + d
-        definition = "struct %s {\n%s};\n" % (self.struct_name, definition)
+        definition = "typedef struct %s {\n%s}%s;\n" % (self.struct_name, definition, self.struct_name)
         return definition
 
 
@@ -50,5 +50,5 @@ class StructObject:
         for v in struct.variables:
             d = " {},".format(v.init_val)
             init = init + d
-        definition = "struct %s %s = {%s};\n" % (struct_name, object_name, init)
+        definition = "%s %s = {%s};\n" % (struct_name, object_name, init)
         return definition

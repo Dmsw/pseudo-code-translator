@@ -2,12 +2,11 @@
 #include <stdlib.h>
 #define MAXLENGTH 10
 #define INF 0x3f3f3f3f
-struct g {
+typedef struct graph {
 	int x;
-}
-
+}graph;
 int main(int argc, char *argv[]){
-	struct g a = { 0,};
+	graph a = { 1,};
 	
 	a.a = 0;
 	return 0;

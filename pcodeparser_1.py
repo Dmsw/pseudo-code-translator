@@ -283,7 +283,8 @@ class pcodeParser:
             p[0] = p[1] + " " + p[2]
             self.func_pars[p[2]] = p[1]
             line_no = p.lineno(1)
-            self._add_parameter(p[2], is_defined=True, line_no=line_no, line_statement=p[0], var_type=p[1])
+            self._add_parameter(p[2], is_defined=True, line_no=line_no, line_statement=p[0], var_type=p[1],
+                                method="func_params")
 
         elif len(p) == 2:
             line_no = p.lineno(1)
