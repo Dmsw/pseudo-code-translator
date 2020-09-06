@@ -31,13 +31,11 @@ class pcodeParser:
         self.cur_func = "main"  # current function name
         self.flag = 0  # flag
         self.structures = dict()  # structure definition
-        self.struct_objects = dict()  # struct objects
         # [TODO: complete the global variable dictionary, so that we can create global variable outside the main]
         self.global_variable = dict()  # global variable
 
     def _add_parameter(self, name, **kwargs):
         """
-
         :param name:
         :param lineno:
         :param line_statement:
@@ -108,6 +106,7 @@ class pcodeParser:
         answer = input().strip()
         while answer != 'q':
             answer = answer.split(" ")
+            answer[0] = self._check_type(answer[0])
             if len(answer) == 2:
                 struct.add(answer[1], answer[0], 0)
             if len(answer) == 3:

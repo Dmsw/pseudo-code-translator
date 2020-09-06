@@ -27,7 +27,7 @@ class Structure:
         for n, t in self.name_type.items():
             d = "{} {};\n".format(t, n)
             definition = definition + d
-        definition = "struct %s {\n%s}\n" % (self.struct_name, definition)
+        definition = "struct %s {\n%s};\n" % (self.struct_name, definition)
         return definition
 
 
