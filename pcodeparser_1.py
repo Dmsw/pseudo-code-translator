@@ -66,20 +66,30 @@ class pcodeParser:
         for par_name in self.par_to_be_init.keys():
             var_info = self.par_to_be_init[par_name]
             if var_info.is_defined == False:
+                struct_only = False
                 where = "\nIn line {:<5}{}".format(var_info.line_no, var_info.line_statement)
                 print(where)
+                hint = ", ".join(self.is_type)
                 if var_info.method == "normal":
                     print("\nWhat's the type of {} in function {}?".format(par_name, self.cur_func))
+                    print("Types available: {} or new struct".format(hint))
+
                 elif var_info.method == "array":
                     print("\nWhat's the element type of array {} in function {}?".format(par_name,
-                                                                                             self.cur_func))
+                                                                                         self.cur_func))
+                    print("Types available: {} or new struct".format(hint))
+
                 elif var_info.method == "struct":
                     print("\nWhat's the struct of {}?".format(par_name))
+                    types = self.structures.keys()
+                    if len(types) > 0:
+                        hint = ", ".join(self.structures.keys())
+                        print("Types available: {}".format(hint))
+                    struct_only = True
 
-                hint = ", ".join(self.is_type)
-                print("Types available: {} or new struct".format(hint))
                 t = str(input()).strip()
-                t = self._check_type(t)
+                t = self._check_type(t, struct_only)
+
 
                 if var_info.method == "struct":
                     struct_object = structure.StructObject(self.structures[t], par_name)
@@ -106,7 +116,7 @@ class pcodeParser:
         answer = input().strip()
         while answer != 'q':
             answer = answer.split(" ")
-            answer[0] = self._check_type(answer[0])
+            answer[0] = self._check_type(answer[0], struct_only=False)
             if len(answer) == 2:
                 struct.add(answer[1], answer[0], 0)
             if len(answer) == 3:
@@ -115,16 +125,24 @@ class pcodeParser:
         self.structures[struct_name] = struct
         return struct_name
 
-    def _check_type(self, str):
+    def _check_type(self, str, struct_only=False):
         """ Check the variable types inputed by users.
             If it's illegal, correct it.
         """
-        while not str in self.is_type:
+        types = self.is_type
+        if struct_only:
+            self.is_type.add(str)
+            types = self.structures.keys()
+            if len(types) == 0:
+                str = self._create_structure(str)
+                return str
+
+        while not str in types:
             print("{} is not a type. If it is a new struct enter 'y' or re-enter the type?".format(str))
             answer = input().strip()
             if answer == 'y':
-                str = self._create_structure(str)
                 self.is_type.add(str)
+                str = self._create_structure(str)
         return str
 
     def correct_bool(self, str):
@@ -247,7 +265,8 @@ class pcodeParser:
             line_statement = p[0]
             where = "In line {:<5}{}".format(line_no, line_statement)
             print("\n{}\nWhat's the type of function {}?".format(where, p[1]))
-            print("Types available: int, float, char, string, bool, void")
+            hint = ", ".join(self.is_type)
+            print("Types available: {} or new struct".format(hint))
             t = str(input()).strip()
             t = self._check_type(t)
             p[0] = t + p[0]
@@ -291,11 +310,13 @@ class pcodeParser:
             line_statement = p[0]
             where = "In line {:<5}{}".format(line_no, line_statement)
             print("\n{}\nWhat's the type of {} in this function?".format(where, p[1]))
-            print("Types available: array, int, float, char, string, bool, void")
+            hint = ", ".join(self.is_type)
+            print("Types available: {} or new struct".format(hint))
             t = str(input()).strip()
             if t == "array":
                 print("What's the element type of array {} in this function?".format(p[1]))
-                print("Types available: int, float, char, string, bool, void")
+                hint = ", ".join(self.is_type)
+                print("Types available: {} or new struct".format(hint))
                 t = str(input()).strip()
                 t = self._check_type(t)
                 p[0] = t + " " + p[1] + "[]"
@@ -312,7 +333,8 @@ class pcodeParser:
             line_statement = p[0]
             where = "In line {:<5}{}".format(line_no, line_statement)
             print("\n{}\nWhat's the element type of array {} in this function?".format(where, p[1]))
-            print("Types available: int, float, char, string, bool, void")
+            hint = ", ".join(self.is_type)
+            print("Types available: {} or new struct".format(hint))
             t = str(input()).strip()
             t = self._check_type(t)
             p[0] = t + " " + p[1] + "[]"

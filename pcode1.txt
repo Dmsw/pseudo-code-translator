@@ -2,3 +2,7 @@ main(){
 	a.a = 0;
 	return 0;
 }
+
+fun(a) {
+return a;
+}
